@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+
+  database:
+    image: mariadb
+    ports:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=supersecurepassword
+      - MYSQL_DATABASE=momentum
+      - MYSQL_USER=momentumuser
+      - MYSQL_PASSWORD=password
+    volumes:
+      - ./volumes/dbdata:/var/lib/mysql
