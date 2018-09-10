@@ -38,11 +38,11 @@ func (r *Routes) Begin(port string) {
 	r.webRouter.HandleFunc("/tasks/{taskid}", CheckLoginStatus(TasksHandlerUpdate)).Methods("Put")
 	r.webRouter.HandleFunc("/tasks/{taskid}", CheckLoginStatus(TasksHandlerDelete)).Methods("Delete")
 
-	// r.webRouter.HandleFunc("/tasks/{taskid}/reports", CheckLoginStatus(ReportsHandlerGetAll)).Methods("Get")
-	// r.webRouter.HandleFunc("/tasks/{taskid}/reports", CheckLoginStatus(ReportsHandlerCreate)).Methods("Post")
-	// r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerGet)).Methods("Get")
-	// r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerUpdate)).Methods("Put")
-	// r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerDelete)).Methods("Delete")
+	r.webRouter.HandleFunc("/tasks/{taskid}/reports", CheckLoginStatus(ReportsHandlerGetAll)).Methods("Get")
+	r.webRouter.HandleFunc("/tasks/{taskid}/reports", CheckLoginStatus(ReportsHandlerCreate)).Methods("Post")
+	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerGet)).Methods("Get")
+	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerUpdate)).Methods("Put")
+	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerDelete)).Methods("Delete")
 
 	mlog.Info("Webserver up and running on port 3000.")
 	mlog.Fatal(http.ListenAndServe(port, r.webRouter))
