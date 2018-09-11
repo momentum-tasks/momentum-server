@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/lib/pq"
+	"time"
 )
 
 var taskTableStatement = `CREATE TABLE IF NOT EXISTS tasks (
@@ -23,14 +23,14 @@ type Task struct {
 	Owner       int
 	Name        string
 	Description string
-	DueDate     pq.NullTime
+	DueDate     time.Time
 	Priority    int
 	Reports     []Report
 	Completed   bool
 }
 
 // CreateTask creates a task, stores it in the database, and appends it to the User that was passed in
-func CreateTask(user *User, name string, description string, due pq.NullTime, priority int, completed bool) error {
+func CreateTask(user *User, name string, description string, due time.Time, priority int, completed bool) error {
 	stmt, err := store.db.Prepare("INSERT INTO tasks(owner, name, description, due, priority, completed) VALUES(?, ?, ?, ?, ?, ?)")
 	res, err := stmt.Exec(user.ID, name, description, due, priority, completed)
 	if err != nil {

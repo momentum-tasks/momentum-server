@@ -49,9 +49,9 @@ func ReportsHandlerGet(w http.ResponseWriter, r *http.Request) {
 	if rv := context.Get(r, UserContext); rv != nil {
 		user := rv.(*User)
 		for _, t := range user.Tasks {
-			if t.ID == taskid {
+			if t.Priority == taskid {
 				for _, report := range t.Reports {
-					if report.ID == reportid {
+					if report.Sequence == reportid {
 						j, _ := json.Marshal(report)
 						fmt.Fprint(w, string(j))
 						return

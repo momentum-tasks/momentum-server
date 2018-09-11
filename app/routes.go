@@ -20,9 +20,6 @@ func NewRoutes() *Routes {
 func (r *Routes) Begin(port string) {
 	r.webRouter = mux.NewRouter().StrictSlash(true)
 
-	// // REST endpoint that contains information about all the various endpoints
-	// r.webRouter.HandleFunc("/", SessionsHandler)
-
 	r.webRouter.HandleFunc("/login", SessionsHandlerLogin).Methods("POST")
 	r.webRouter.HandleFunc("/logout", CheckLoginStatus(SessionsHandlerLogout)).Methods("POST")
 
