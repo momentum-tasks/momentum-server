@@ -74,6 +74,50 @@ func TasksHandlerGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func TasksHandlerUpdate(w http.ResponseWriter, r *http.Request) {
+	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
+	if err != nil {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+	if rv := context.Get(r, UserContext); rv != nil {
+		user := rv.(*User)
+		decoder := json.NewDecoder(r.Body)
+		var t struct {
+			Name        string
+			Description string
+			Due         time.Time
+			Priority    int
+			Completed   bool
+		}
+		err := decoder.Decode(&t)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		for _, task := range user.Tasks {
+			if task.Priority == taskid {
+				if t.Name != "" && t.Name != task.Name {
+					task.UpdateName(t.Name)
+				}
+				if t.Description != "" && t.Description != task.Description {
+					task.UpdateDescription(t.Name)
+				}
+				if !t.Due.IsZero() && t.Due != task.DueDate {
+					task.UpdateDue(t.Due)
+				}
+				if t.Completed != task.Completed {
+					task.UpdateCompleted(t.Completed)
+				}
+				// Priority must be updated last, as it could affect the other updates
+				if t.Priority != 0 && t.Priority != task.Priority {
+					task.UpdatePriority(user, t.Priority)
+				}
+				return
+			}
+		}
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
 }
 
 func TasksHandlerDelete(w http.ResponseWriter, r *http.Request) {

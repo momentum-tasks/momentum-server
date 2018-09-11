@@ -63,3 +63,84 @@ func GetTasksByUser(user *User) []Task {
 	}
 	return tasks
 }
+
+func (task *Task) UpdateName(name string) error {
+	stmt, err := store.db.Prepare("UPDATE tasks SET name = ? WHERE owner = ? and priority = ?")
+	_, err = stmt.Exec(name, task.Owner, task.Priority)
+	if err != nil {
+		mlog.Error(err)
+		return err
+	}
+	return nil
+}
+
+func (task *Task) UpdateDescription(desc string) error {
+	stmt, err := store.db.Prepare("UPDATE tasks SET description = ? WHERE owner = ? and priority = ?")
+	_, err = stmt.Exec(desc, task.Owner, task.Priority)
+	if err != nil {
+		mlog.Error(err)
+		return err
+	}
+	return nil
+}
+
+func (task *Task) UpdateDue(due time.Time) error {
+	stmt, err := store.db.Prepare("UPDATE tasks SET due = ? WHERE owner = ? and priority = ?")
+	_, err = stmt.Exec(due, task.Owner, task.Priority)
+	if err != nil {
+		mlog.Error(err)
+		return err
+	}
+	return nil
+}
+
+func (task *Task) UpdatePriority(user *User, newPriority int) error {
+	var moveDirection int
+	if task.Priority > newPriority {
+		moveDirection = 1
+	} else {
+		moveDirection = -1
+	}
+	stmt, err := store.db.Prepare("UPDATE tasks SET priority = ? WHERE owner = ? and priority = ?")
+	_, err = stmt.Exec(0, user.ID, task.Priority)
+	if err != nil {
+		mlog.Error(err)
+		return err
+	}
+
+	for _, t := range user.Tasks {
+		if moveDirection > 0 {
+			if t.Priority >= newPriority && t.Priority < task.Priority {
+				_, err = stmt.Exec(t.Priority+moveDirection, user.ID, t.Priority)
+				if err != nil {
+					mlog.Error(err)
+					return err
+				}
+			}
+		} else if moveDirection < 0 {
+			if t.Priority <= newPriority && t.Priority > task.Priority {
+				_, err = stmt.Exec(t.Priority+moveDirection, user.ID, t.Priority)
+				if err != nil {
+					mlog.Error(err)
+					return err
+				}
+			}
+		}
+	}
+	_, err = stmt.Exec(newPriority, user.ID, 0)
+	if err != nil {
+		mlog.Error(err)
+		return err
+	}
+	return nil
+}
+
+func (task *Task) UpdateCompleted(completed bool) error {
+	stmt, err := store.db.Prepare("UPDATE tasks SET completed = ? WHERE owner = ? and priority = ?")
+	_, err = stmt.Exec(completed, task.Owner, task.Priority)
+	if err != nil {
+		mlog.Error(err)
+		return err
+	}
+	return nil
+}
