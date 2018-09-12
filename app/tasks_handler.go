@@ -23,7 +23,7 @@ func TasksHandlerGetAll(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TasksHandlerCreate creates a task for the current user
+// TasksHandlerCreate creates a task for the current user, followed by a defrag of the user's tasks
 // Requires a JSON body with the task's name, description, due, priority, and completed status
 func TasksHandlerCreate(w http.ResponseWriter, r *http.Request) {
 	if rv := context.Get(r, UserContext); rv != nil {
@@ -43,6 +43,11 @@ func TasksHandlerCreate(w http.ResponseWriter, r *http.Request) {
 		}
 		if t.Name != "" && t.Description != "" && t.Priority != 0 {
 			err = CreateTask(user, t.Name, t.Description, t.Due, t.Priority, t.Completed)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			err = DefragTasks(user)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
@@ -73,6 +78,7 @@ func TasksHandlerGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// TasksHandlerUpdate handles updating a task's information, as well as reordering tasks if a priority changes
 func TasksHandlerUpdate(w http.ResponseWriter, r *http.Request) {
 	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
 	if err != nil {
@@ -120,5 +126,31 @@ func TasksHandlerUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// TasksHandlerDelete deletes the specified task, all associated reports, and then runs a defrag on the task list
 func TasksHandlerDelete(w http.ResponseWriter, r *http.Request) {
+	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
+	if err != nil {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+	if rv := context.Get(r, UserContext); rv != nil {
+		user := rv.(*User)
+		for _, t := range user.Tasks {
+			if t.Priority == taskid {
+				err = t.Delete()
+				if err != nil {
+					http.Error(w, "400 Bad Request", http.StatusBadRequest)
+					return
+				}
+				err = DefragTasks(user)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				return
+			}
+		}
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
 }

@@ -51,3 +51,14 @@ func GetReportsByTask(task *Task) []Report {
 	}
 	return reports
 }
+
+// Delete removes the report from the database
+func (report *Report) Delete() error {
+	stmt, err := store.db.Prepare("DELETE FROM reports WHERE taskid = ? and sequence = ?")
+	_, err = stmt.Exec(report.TaskID, report.Sequence)
+	if err != nil {
+		mlog.Error(err)
+		return err
+	}
+	return nil
+}
