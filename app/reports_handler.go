@@ -108,4 +108,40 @@ func ReportsHandlerUpdate(w http.ResponseWriter, r *http.Request) {
 }
 
 func ReportsHandlerDelete(w http.ResponseWriter, r *http.Request) {
+	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
+	if err != nil {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+	reportid, err := strconv.Atoi(mux.Vars(r)["reportid"])
+	if err != nil {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+	if rv := context.Get(r, UserContext); rv != nil {
+		user := rv.(*User)
+		for _, t := range user.Tasks {
+			if t.Priority == taskid {
+				for _, report := range t.Reports {
+					if report.Sequence == reportid {
+						err = report.Delete()
+						if err != nil {
+							http.Error(w, "400 Bad Request", http.StatusBadRequest)
+							return
+						}
+						err = DefragReports(&t)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusBadRequest)
+							return
+						}
+						return
+					}
+				}
+				http.Error(w, "400 Bad Request", http.StatusBadRequest)
+				return
+			}
+		}
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
 }
