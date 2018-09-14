@@ -62,3 +62,25 @@ func (report *Report) Delete() error {
 	}
 	return nil
 }
+
+// DefragReports works to eliminate gaps in sequence that could be made from a malformed API call, or from deleting a report
+func DefragReports(task *Task) error {
+	lastSequence := 0
+	stmt, err := store.db.Prepare("UPDATE reports SET sequence = ? WHERE taskid = ? and sequence = ?")
+	if err != nil {
+		return err
+	}
+
+	for _, r := range GetReportsByTask(task) {
+		if r.Sequence > lastSequence+1 {
+			_, err = stmt.Exec(lastSequence+1, task.ID, r.Sequence)
+			if err != nil {
+				return err
+			}
+			lastSequence++
+		} else {
+			lastSequence = r.Sequence
+		}
+	}
+	return nil
+}

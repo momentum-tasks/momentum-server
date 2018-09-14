@@ -41,7 +41,7 @@ func TasksHandlerCreate(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if t.Name != "" && t.Description != "" && t.Priority != 0 {
+		if t.Name != "" && t.Description != "" && t.Priority > 0 {
 			err = CreateTask(user, t.Name, t.Description, t.Due, t.Priority, t.Completed)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
@@ -115,7 +115,7 @@ func TasksHandlerUpdate(w http.ResponseWriter, r *http.Request) {
 					task.UpdateCompleted(t.Completed)
 				}
 				// Priority must be updated last, as it could affect the other updates
-				if t.Priority != 0 && t.Priority != task.Priority {
+				if t.Priority > 0 && t.Priority != task.Priority {
 					task.UpdatePriority(user, t.Priority)
 				}
 				return

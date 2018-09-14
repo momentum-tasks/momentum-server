@@ -20,7 +20,7 @@ func ReportsHandlerGetAll(w http.ResponseWriter, r *http.Request) {
 	if rv := context.Get(r, UserContext); rv != nil {
 		user := rv.(*User)
 		for _, t := range user.Tasks {
-			if t.ID == taskid {
+			if t.Priority == taskid {
 				j, _ := json.Marshal(t.Reports)
 				fmt.Fprint(w, string(j))
 				return
@@ -31,7 +31,45 @@ func ReportsHandlerGetAll(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ReportsHandlerCreate creates a report for the specified task, followed by a defrag of the task's reports
+// Requires a JSON body with the report's sequence, and id
 func ReportsHandlerCreate(w http.ResponseWriter, r *http.Request) {
+	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
+	if err != nil {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+	if rv := context.Get(r, UserContext); rv != nil {
+		user := rv.(*User)
+		decoder := json.NewDecoder(r.Body)
+		var newReport struct {
+			Sequence    int
+			Description string
+		}
+		err := decoder.Decode(&newReport)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		for _, t := range user.Tasks {
+			if t.Priority == taskid {
+				if newReport.Description != "" && newReport.Sequence > 0 {
+					err = CreateReport(&t, newReport.Sequence, newReport.Description)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusBadRequest)
+						return
+					}
+					err = DefragReports(&t)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusBadRequest)
+						return
+					}
+					fmt.Fprint(w, "Successfully created report")
+				}
+				return
+			}
+		}
+	}
 }
 
 // ReportsHandlerGet returns a single report associated with a given task
