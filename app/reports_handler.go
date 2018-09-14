@@ -107,6 +107,7 @@ func ReportsHandlerGet(w http.ResponseWriter, r *http.Request) {
 func ReportsHandlerUpdate(w http.ResponseWriter, r *http.Request) {
 }
 
+// ReportsHandlerDelete deletes the report from the specified task, and then runs a defrag on the reports list for that task
 func ReportsHandlerDelete(w http.ResponseWriter, r *http.Request) {
 	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
 	if err != nil {
