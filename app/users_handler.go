@@ -14,6 +14,7 @@ func UsersHandlerGet(w http.ResponseWriter, r *http.Request) {
 	if rv := context.Get(r, UserContext); rv != nil {
 		user := rv.(*User)
 		j, _ := json.Marshal(user)
+		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprint(w, string(j))
 	}
 }

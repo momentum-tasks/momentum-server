@@ -22,6 +22,7 @@ func ReportsHandlerGetAll(w http.ResponseWriter, r *http.Request) {
 		for _, t := range user.Tasks {
 			if t.Priority == taskid {
 				j, _ := json.Marshal(t.Reports)
+				w.Header().Set("Content-Type", "application/json")
 				fmt.Fprint(w, string(j))
 				return
 			}
@@ -91,6 +92,7 @@ func ReportsHandlerGet(w http.ResponseWriter, r *http.Request) {
 				for _, report := range t.Reports {
 					if report.Sequence == reportid {
 						j, _ := json.Marshal(report)
+						w.Header().Set("Content-Type", "application/json")
 						fmt.Fprint(w, string(j))
 						return
 					}

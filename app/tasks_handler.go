@@ -19,6 +19,7 @@ func TasksHandlerGetAll(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			mlog.Error(err)
 		}
+		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprint(w, string(j))
 	}
 }
@@ -69,6 +70,7 @@ func TasksHandlerGet(w http.ResponseWriter, r *http.Request) {
 		for _, t := range user.Tasks {
 			if t.Priority == taskid {
 				j, _ := json.Marshal(t)
+				w.Header().Set("Content-Type", "application/json")
 				fmt.Fprint(w, string(j))
 				return
 			}
