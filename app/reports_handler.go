@@ -106,7 +106,50 @@ func ReportsHandlerGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ReportsHandlerUpdate handles updating a report's information, as well as reordering a task's reports if a sequence changes
 func ReportsHandlerUpdate(w http.ResponseWriter, r *http.Request) {
+	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
+	if err != nil {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+	reportid, err := strconv.Atoi(mux.Vars(r)["reportid"])
+	if err != nil {
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
+	if rv := context.Get(r, UserContext); rv != nil {
+		user := rv.(*User)
+		decoder := json.NewDecoder(r.Body)
+		var newReport struct {
+			Sequence    int
+			Description string
+		}
+		err := decoder.Decode(&newReport)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		for _, t := range user.Tasks {
+			if t.Priority == taskid {
+				for _, report := range t.Reports {
+					if report.Sequence == reportid {
+						if newReport.Description != "" && newReport.Description != report.Description {
+							report.UpdateDescription(newReport.Description)
+						}
+						if newReport.Sequence > 0 && newReport.Sequence != report.Sequence {
+							err = report.UpdateSequence(&t, newReport.Sequence)
+						}
+						return
+					}
+				}
+				http.Error(w, "400 Bad Request", http.StatusBadRequest)
+				return
+			}
+		}
+		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		return
+	}
 }
 
 // ReportsHandlerDelete deletes the report from the specified task, and then runs a defrag on the reports list for that task

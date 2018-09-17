@@ -128,6 +128,10 @@ func (task *Task) UpdatePriority(user *User, newPriority int) error {
 	if err != nil {
 		return err
 	}
+	err = DefragTasks(user)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
