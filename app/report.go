@@ -70,7 +70,7 @@ func (report *Report) UpdateSequence(task *Task, newSequence int) error {
 	} else {
 		moveDirection = -1
 	}
-	stmt, err := store.db.Prepare("UPDATE tasks SET sequence = ? WHERE task = ? and sequence = ?")
+	stmt, err := store.db.Prepare("UPDATE reports SET sequence = ? WHERE taskid = ? and sequence = ?")
 	_, err = stmt.Exec(0, task.ID, report.Sequence)
 	if err != nil {
 		return err
@@ -78,14 +78,14 @@ func (report *Report) UpdateSequence(task *Task, newSequence int) error {
 
 	for _, r := range task.Reports {
 		if moveDirection > 0 {
-			if r.Sequence >= newSequence && r.Sequence < task.Priority {
+			if r.Sequence >= newSequence && r.Sequence < report.Sequence {
 				_, err = stmt.Exec(r.Sequence+moveDirection, task.ID, r.Sequence)
 				if err != nil {
 					return err
 				}
 			}
 		} else if moveDirection < 0 {
-			if r.Sequence <= newSequence && r.Sequence > task.Priority {
+			if r.Sequence <= newSequence && r.Sequence > report.Sequence {
 				_, err = stmt.Exec(r.Sequence+moveDirection, task.ID, r.Sequence)
 				if err != nil {
 					return err

@@ -135,10 +135,18 @@ func ReportsHandlerUpdate(w http.ResponseWriter, r *http.Request) {
 				for _, report := range t.Reports {
 					if report.Sequence == reportid {
 						if newReport.Description != "" && newReport.Description != report.Description {
-							report.UpdateDescription(newReport.Description)
+							err = report.UpdateDescription(newReport.Description)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusBadRequest)
+								return
+							}
 						}
 						if newReport.Sequence > 0 && newReport.Sequence != report.Sequence {
 							err = report.UpdateSequence(&t, newReport.Sequence)
+							if err != nil {
+								http.Error(w, err.Error(), http.StatusBadRequest)
+								return
+							}
 						}
 						return
 					}
