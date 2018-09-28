@@ -33,7 +33,7 @@ func ReportsHandlerGetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 // ReportsHandlerCreate creates a report for the specified task, followed by a defrag of the task's reports
-// Requires a JSON body with the report's sequence, and id
+// Requires a JSON body with the report's sequence, and description
 func ReportsHandlerCreate(w http.ResponseWriter, r *http.Request) {
 	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
 	if err != nil {
