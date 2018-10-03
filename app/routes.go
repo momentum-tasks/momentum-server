@@ -43,7 +43,7 @@ func (r *Routes) Begin(port string) {
 	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerUpdate)).Methods("Put")
 	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerDelete)).Methods("Delete")
 
-	headersOk := handlers.AllowedHeaders([]string{"X-Session-Token", "Authorization"})
+	headersOk := handlers.AllowedHeaders([]string{"X-Session-Token", "Authorization", "Content-Type"})
 	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3001"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 

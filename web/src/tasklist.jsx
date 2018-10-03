@@ -22,8 +22,9 @@ export class TaskList extends React.Component {
 
   render() {
     var tasks = [];
+    var token = this.props.token;
     this.state.restData.forEach(function(item) {
-      tasks.push(<Task key={item.ID} task={item} />);
+      tasks.push(<Task key={item.ID} task={item} token={token} />);
     });
     return <div className="task-list">{tasks}</div>;
   }

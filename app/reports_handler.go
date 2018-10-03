@@ -37,7 +37,7 @@ func ReportsHandlerGetAll(w http.ResponseWriter, r *http.Request) {
 func ReportsHandlerCreate(w http.ResponseWriter, r *http.Request) {
 	taskid, err := strconv.Atoi(mux.Vars(r)["taskid"])
 	if err != nil {
-		http.Error(w, "400 Bad Request", http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	if rv := context.Get(r, UserContext); rv != nil {
