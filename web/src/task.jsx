@@ -37,7 +37,7 @@ export class Task extends React.Component {
   toggleShowCreateReportModal() {
     this.setState({
       showCreateReportModal: !this.state.showCreateReportModal,
-      sequence: 0,
+      sequence: 4294967295,
       description: ""
     });
   }
@@ -58,7 +58,7 @@ export class Task extends React.Component {
       .post(
         "http://localhost:3000/tasks/" + this.state.task.ID + "/reports",
         {
-          sequence: parseInt(this.state.sequence),
+          sequence: this.state.sequence,
           description: this.state.description
         },
         {
@@ -102,21 +102,15 @@ export class Task extends React.Component {
           isOpen={this.state.showCreateReportModal}
           toggle={this.toggleShowCreateReportModal}
           className={this.props.className}>
-          <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+          <ModalHeader toggle={this.toggle}>
+            Create report for: <strong>{this.state.task.Name}</strong>
+          </ModalHeader>
           <ModalBody>
             <Form onSubmit={this.handleSubmit}>
               <FormGroup>
-                <Label>Sequence</Label>
-                <Input
-                  autoFocus
-                  type="number"
-                  id="sequence"
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
                 <Label>Description</Label>
                 <Input
+                  autofocus={true}
                   type="textarea"
                   id="description"
                   onChange={this.handleChange}
