@@ -9,7 +9,8 @@ export class Login extends React.Component {
 
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      invalid: this.props.invalid
     };
   }
 
@@ -37,8 +38,16 @@ export class Login extends React.Component {
   };
 
   render() {
+    var loginErr;
+    if (this.state.invalid) {
+      loginErr = (
+        <FormGroup hidden={this.state.invalid}>
+          <Label>Invalid username or password.</Label>
+        </FormGroup>
+      );
+    }
     return (
-      <div className="Login">
+      <div className="Login" id="login">
         <Form onSubmit={this.handleSubmit}>
           <FormGroup>
             <Label>Username</Label>
@@ -53,6 +62,7 @@ export class Login extends React.Component {
             <Label>Password</Label>
             <Input type="password" id="password" onChange={this.handleChange} />
           </FormGroup>
+          {loginErr}
           <Button color="primary" disabled={!this.validateForm()}>
             Submit
           </Button>
