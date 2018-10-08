@@ -11,6 +11,10 @@
   margin: auto;
 }
 
+#error-text {
+  color: red;
+}
+
 .task-list {
   display: flex;
   flex-direction: column;

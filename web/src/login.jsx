@@ -19,7 +19,6 @@ export class Login extends React.Component {
   }
 
   handleChange = event => {
-    console.log(event.target);
     this.setState({
       [event.target.id]: event.target.value
     });
@@ -32,17 +31,21 @@ export class Login extends React.Component {
         auth: { username: this.state.username, password: this.state.password }
       })
       .then(response => {
-        new Cookies().set("X-Session-Token", response.data);
+        var cookieValue = response.data;
+        if (response.data === "") {
+          cookieValue = "invalid";
+        }
+        new Cookies().set("X-Session-Token", cookieValue, { path: "/" });
         window.location.reload();
       });
   };
 
   render() {
     var loginErr;
-    if (this.state.invalid) {
+    if (this.props.invalid) {
       loginErr = (
-        <FormGroup hidden={this.state.invalid}>
-          <Label>Invalid username or password.</Label>
+        <FormGroup>
+          <Label id="error-text">Invalid username or password.</Label>
         </FormGroup>
       );
     }
