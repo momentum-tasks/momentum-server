@@ -12,31 +12,26 @@ export class App extends React.Component {
 
     this.state = {
       token: null,
-      user: { Username: "User", Email: "user@example.com", Tasks: null }
+      user: { Username: "User", Email: "user@example.com", Tasks: null },
+      invalid: false
     };
   }
 
   componentDidMount() {
     var token = new Cookies().get("X-Session-Token") || null;
+    console.log(token);
     if (token != null) {
       axios
         .post("http://localhost:3000/token", null, {
           headers: { "X-Session-Token": token }
         })
         .then(response => {
-          if (response.status !== 200) {
-            new Cookies().remove("X-Session-Token");
-            token = null;
-          }
-          this.setState({ token: token });
+          this.setState({ token: token, invalid: false });
           this.getUserFromToken(token);
         })
         .catch(error => {
-          if (error.response.status !== 200) {
-            new Cookies().remove("X-Session-Token");
-            token = null;
-          }
-          this.setState({ token: token });
+          new Cookies().set("X-Session-Token", "invalid", { path: "/" });
+          this.setState({ token: "invalid", invalid: true });
         });
     }
   }
@@ -52,7 +47,7 @@ export class App extends React.Component {
   }
 
   render() {
-    if (this.state.token != null) {
+    if (this.state.token !== null && this.state.token !== "invalid") {
       return (
         <div>
           <Header token={this.state.token} user={this.state.user} />
@@ -66,7 +61,7 @@ export class App extends React.Component {
         <div>
           <Header token={this.state.token} user={this.state.user} />
           <div id="content">
-            <Login />
+            <Login invalid={this.state.invalid} />
           </div>
         </div>
       );

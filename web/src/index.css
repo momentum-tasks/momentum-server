@@ -6,6 +6,15 @@
   margin: auto;
 }
 
+#login {
+  max-width: 600px;
+  margin: auto;
+}
+
+#error-text {
+  color: red;
+}
+
 .task-list {
   display: flex;
   flex-direction: column;
