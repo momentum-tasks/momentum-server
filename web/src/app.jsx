@@ -19,7 +19,6 @@ export class App extends React.Component {
 
   componentDidMount() {
     var token = new Cookies().get("X-Session-Token") || null;
-    console.log(token);
     if (token != null) {
       axios
         .post("http://localhost:3000/token", null, {
