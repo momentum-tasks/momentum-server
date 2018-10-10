@@ -15,7 +15,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Progress
 } from "reactstrap";
 import { Report } from "./report";
