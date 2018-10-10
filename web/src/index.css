@@ -1,0 +1,89 @@
+#content {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  max-width: 1200px;
+  margin: auto;
+}
+
+#login {
+  max-width: 600px;
+  margin: auto;
+}
+
+#error-text {
+  color: red;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.task {
+  background-color: #f1f1f1 !important;
+  border-radius: 8px;
+  margin: 0.1em 0.1em;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.task-info {
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  background-color: #31beff;
+  border-radius: 8px;
+  padding: 0.5em;
+}
+
+.task-name {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.task-description {
+}
+
+.report-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100%;
+  min-width: 325px;
+}
+
+.report-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.report {
+  min-width: 250px;
+}
+
+.report-list::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5em;
+}
+
+.report-list::-webkit-scrollbar,
+.report-list::-webkit-scrollbar-thumb,
+.report-list::-webkit-scrollbar-thumb:horizontal {
+  overflow: auto;
+  border-radius: 4px;
+}
+
+.report-list::-webkit-scrollbar-thumb,
+.report-list::-webkit-scrollbar-thumb:horizontal {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.report-list::-webkit-scrollbar-corner {
+  display: none;
+}

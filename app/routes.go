@@ -3,6 +3,7 @@ package app
 import (
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -21,7 +22,8 @@ func (r *Routes) Begin(port string) {
 	r.webRouter = mux.NewRouter().StrictSlash(true)
 
 	r.webRouter.HandleFunc("/login", SessionsHandlerLogin).Methods("POST")
-	r.webRouter.HandleFunc("/logout", CheckLoginStatus(SessionsHandlerLogout)).Methods("POST")
+	r.webRouter.HandleFunc("/logout", SessionsHandlerLogout).Methods("POST")
+	r.webRouter.HandleFunc("/token", SessionsHandlerCheck).Methods("POST")
 
 	// No authentication required
 	r.webRouter.HandleFunc("/users", UsersHandlerCreate).Methods("Post")
@@ -41,6 +43,10 @@ func (r *Routes) Begin(port string) {
 	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerUpdate)).Methods("Put")
 	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerDelete)).Methods("Delete")
 
+	headersOk := handlers.AllowedHeaders([]string{"X-Session-Token", "Authorization", "Content-Type"})
+	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3001"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+
 	mlog.Info("Webserver up and running on port 3000.")
-	mlog.Fatal(http.ListenAndServe(port, r.webRouter))
+	mlog.Fatal(http.ListenAndServe(port, handlers.CORS(originsOk, headersOk, methodsOk, handlers.AllowCredentials())(r.webRouter)))
 }

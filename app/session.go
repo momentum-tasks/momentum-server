@@ -2,8 +2,6 @@ package app
 
 import (
 	"time"
-
-	"github.com/lib/pq"
 )
 
 // duration in hours before a session expires
@@ -22,8 +20,8 @@ var userSessionTableStatement = `CREATE TABLE IF NOT EXISTS usersessions (
 type UserSession struct {
 	SessionToken string
 	UserID       int
-	LoginTime    pq.NullTime
-	LastSeenTime pq.NullTime
+	LoginTime    time.Time
+	LastSeenTime time.Time
 }
 
 // CreateSession creates a session and stores it in the database for a given user, with a session token
@@ -52,7 +50,7 @@ func GetUserBySessionToken(sessionToken string) (*User, bool) {
 	// get the time of number of hours of sessionDuration ago (eg. 24 hours ago)
 	// then compare it to the LoginTime, and see if the user was Logged in after sessionDurationAgo
 	sessionDurationAgo := time.Now().Add(time.Duration(-1*sessionDuration) * time.Hour)
-	loggedIn := session.LoginTime.Time.After(sessionDurationAgo)
+	loggedIn := session.LoginTime.After(sessionDurationAgo)
 
 	// Update or Delete the session token if they are not logged in anymore
 	if loggedIn {

@@ -86,3 +86,21 @@ func SessionsHandlerLogout(w http.ResponseWriter, r *http.Request) {
 		// Return bad login message
 	}
 }
+
+func SessionsHandlerCheck(w http.ResponseWriter, r *http.Request) {
+	token := GetSessionToken(r)
+	if token != "" {
+		_, loggedIn := GetUserBySessionToken(token)
+		if loggedIn {
+			http.Error(w, "OK", http.StatusOK)
+			return
+		} else {
+			ClearSession(token)
+			http.Error(w, "Forbidden", http.StatusForbidden)
+			return
+		}
+	} else {
+		http.Error(w, "Forbidden", http.StatusForbidden)
+		return
+	}
+}
