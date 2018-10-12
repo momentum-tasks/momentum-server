@@ -44,7 +44,7 @@ func (r *Routes) Begin(port string) {
 	r.webRouter.HandleFunc("/tasks/{taskid}/reports/{reportid}", CheckLoginStatus(ReportsHandlerDelete)).Methods("Delete")
 
 	headersOk := handlers.AllowedHeaders([]string{"X-Session-Token", "Authorization", "Content-Type"})
-	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3001"})
+	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3000"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 
 	mlog.Info("Webserver up and running on port 3000.")

@@ -27,7 +27,7 @@ export class Login extends React.Component {
   handleSubmit = event => {
     event.preventDefault();
     axios
-      .post("http://localhost:3000/login", null, {
+      .post(process.env.REACT_APP_API_URL + "/login", null, {
         auth: { username: this.state.username, password: this.state.password }
       })
       .then(response => {
