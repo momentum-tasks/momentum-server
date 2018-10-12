@@ -73,7 +73,7 @@ export class Header extends React.Component {
     event.preventDefault();
     axios
       .post(
-        "http://localhost:3000/tasks",
+        process.env.REACT_APP_API_URL + "/tasks",
         {
           name: this.state.name,
           description: this.state.description,
@@ -104,7 +104,7 @@ export class Header extends React.Component {
 
   logout = event => {
     event.preventDefault();
-    axios.post("http://localhost:3000/logout", null, {
+    axios.post(process.env.REACT_APP_API_URL + "/logout", null, {
       headers: { "X-Session-Token": this.props.token }
     });
     new Cookies().remove("X-Session-Token");

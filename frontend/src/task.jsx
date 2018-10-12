@@ -55,7 +55,10 @@ export class Task extends React.Component {
     event.preventDefault();
     axios
       .post(
-        "http://localhost:3000/tasks/" + this.state.task.ID + "/reports",
+        process.env.REACT_APP_API_URL +
+          "/tasks/" +
+          this.state.task.ID +
+          "/reports",
         {
           sequence: this.state.sequence,
           description: this.state.description
@@ -69,7 +72,7 @@ export class Task extends React.Component {
       )
       .then(response => {
         axios
-          .get("http://localhost:3000/tasks/" + this.state.task.ID, {
+          .get(process.env.REACT_APP_API_URL + "/tasks/" + this.state.task.ID, {
             headers: { "X-Session-Token": this.props.token }
           })
           .then(response => {

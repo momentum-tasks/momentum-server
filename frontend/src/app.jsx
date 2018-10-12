@@ -10,6 +10,7 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log(process.env);
     this.state = {
       token: null,
       user: { Username: "User", Email: "user@example.com", Tasks: null },
@@ -21,7 +22,7 @@ export class App extends React.Component {
     var token = new Cookies().get("X-Session-Token") || null;
     if (token != null) {
       axios
-        .post("http://localhost:3000/token", null, {
+        .post(process.env.REACT_APP_API_URL + "/token", null, {
           headers: { "X-Session-Token": token }
         })
         .then(response => {
@@ -37,7 +38,7 @@ export class App extends React.Component {
 
   getUserFromToken(token) {
     axios
-      .get("http://localhost:3000/users", {
+      .get(process.env.REACT_APP_API_URL + "/users", {
         headers: { "X-Session-Token": token }
       })
       .then(response => {

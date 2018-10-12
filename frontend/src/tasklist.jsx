@@ -12,7 +12,7 @@ export class TaskList extends React.Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:3000/tasks", {
+      .get(process.env.REACT_APP_API_URL + "/tasks", {
         headers: { "X-Session-Token": this.props.token }
       })
       .then(response => {
