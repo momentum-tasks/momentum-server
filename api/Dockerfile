@@ -1,6 +1,6 @@
 FROM golang:1.10 AS builder
 
-WORKDIR /go/src/github.com/momentum-tasks/momentum-server
+WORKDIR /go/src/github.com/momentum-tasks/momentum-server/api
 COPY . .
 
 RUN go get -d -v ./...
@@ -9,7 +9,7 @@ RUN cd cmd/momentum && \
 
 FROM scratch
 WORKDIR /root/
-COPY --from=builder /go/src/github.com/momentum-tasks/momentum-server/cmd/momentum/momentum .
+COPY --from=builder /go/src/github.com/momentum-tasks/momentum-server/api/cmd/momentum/momentum .
 
 EXPOSE 3000
 ENTRYPOINT ["./momentum"]
