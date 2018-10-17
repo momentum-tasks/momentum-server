@@ -10,10 +10,9 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log(process.env);
     this.state = {
       token: null,
-      user: { Username: "User", Email: "user@example.com", Tasks: null },
+      user: { Username: "", Email: "", Tasks: null },
       invalid: false
     };
   }
