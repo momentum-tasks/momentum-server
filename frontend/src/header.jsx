@@ -155,29 +155,36 @@ export class Header extends React.Component {
       </Modal>
     );
 
+    var navItems;
+    if (this.props.user.Username != "") {
+      navItems = (
+        <Collapse isOpen={this.state.isOpen} navbar>
+          <Nav className="ml-auto" navbar>
+            <NavItem onClick={this.toggleShowCreateTaskModal}>
+              <NavLink>New Task</NavLink>
+            </NavItem>
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                {this.props.user.Username}
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem>Settings</DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem onClick={this.logout}>Logout</DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </Nav>
+        </Collapse>
+      );
+    }
+
     return (
       <div>
         {createTaskModal}
         <Navbar color="dark" dark expand="md">
           <NavbarBrand href="/">Momentum Tasks</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              <NavItem onClick={this.toggleShowCreateTaskModal}>
-                <NavLink>New Task</NavLink>
-              </NavItem>
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  {this.props.user.Username}
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>Settings</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem onClick={this.logout}>Logout</DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </Nav>
-          </Collapse>
+          {navItems}
         </Navbar>
       </div>
     );
